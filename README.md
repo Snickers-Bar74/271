@@ -38,6 +38,7 @@ the easiest launcher on this machine.
 .\271.cmd run .\examples\module-names.271
 .\271.cmd run .\examples\package-demo.271
 .\271.cmd run .\examples\jew.271
+.\271.cmd run .\examples\browser.271
 .\271.cmd run .\examples\maybe-safety.271
 .\271.cmd run .\examples\collection-safety.271
 .\271.cmd run .\examples\destructuring.271
@@ -79,6 +80,7 @@ Invoke-RestMethod "http://127.0.0.1:2710/hello" -Method Post -Body '{"name":"Gra
 - `examples/module-alias.271`: namespaced module imports
 - `examples/module-names.271`: importing specific names from a source file
 - `examples/http-client.271`: HTTP GET and POST client calls against the local server
+- `examples/browser.271`: native no-Tkinter desktop browser window
 - `examples/package-demo.271`: installed local package import
 - `examples/emitted-demo.271`: small program that can be emitted to standalone Python source
 - `examples/emitted-advanced.271`: emitter coverage for maps, sets, matches, results, loops, defaults, variadics, and try/catch/finally
@@ -152,7 +154,7 @@ The local runner supports:
 - plain-English runtime traces for nested failures in teachings, compiled programs, and packaged apps
 - preloaded alias `jew`, where `Say jew` and `Say "jew"` both print `271`
 - `Spawn`, `Await`, `Async All`, `Async Race`, typed `Channel`, checked `Send`, `Receive`, and `Close`
-- built-in `String`, `List`, `Map`, `Math`, `File`, `Json`, `Time`, `OS`, `Regex`, `Async`, `Http Get`, `Http Post`, and `Http Serve`
+- built-in `String`, `List`, `Map`, `Math`, `File`, `Json`, `Time`, `OS`, `Regex`, `Async`, `Http Get`, `Http Post`, `Http Serve`, and `Desktop Browser`
 - local `new`, `doctor`, `check`, `run`, `run-compiled`, `repl`, `test`, `lint`, `format`, `docs`, `add`, `build`, `compile`, `emit-python`, `pack`, `serve-registry`, `lsp`, and `version` commands
 - semantic preflight checks during `check` and `run` for unknown names, ignored `Result` values, wrong channel message types, wrong typed collection items, missing union `Match` branches, type-changing mutation, bad call targets, method argument types, parent-call misuse, missing `Maybe` annotations including unchecked map lookups, bad destructuring, bad field patterns, kept-value changes, missing imports, misplaced `Stop`/`Skip`, malformed maps, and clear type mismatches
 - fresh project scaffolding with app, tests, package manifest, launchers, and copied runner

@@ -18,7 +18,9 @@ import os
 import queue
 import re
 import shutil
+import subprocess
 import sys
+import tempfile
 import threading
 import time
 import zipfile
@@ -32,7 +34,7 @@ from urllib import request as url_request
 from typing import Any, Callable
 
 
-VERSION = "0.25.0"
+VERSION = "0.26.0"
 
 
 class PlainError(Exception):
@@ -564,6 +566,7 @@ class Runner:
         add("Http Get", self.builtin_http_get)
         add("Http Post", self.builtin_http_post)
         add("Http Serve", self.builtin_http_serve)
+        add("Desktop Browser", self.builtin_desktop_browser)
 
         add("Async All", self.builtin_async_all)
         add("Async Race", self.builtin_async_race)
@@ -2296,6 +2299,227 @@ class Runner:
             print("Server stopped.")
         return None
 
+    def builtin_desktop_browser(self, args: list[Any], named: dict[str, Any]) -> Result:
+        if os.name != "nt":
+            return Result.failure("Desktop Browser needs Windows because it uses a native Windows Forms window.")
+        home = str(named.get("home", named.get("url", args[0] if args else "https://example.com")))
+        title = str(named.get("title", "271 Browser"))
+        width = int(named.get("width", 1200))
+        height = int(named.get("height", 780))
+        wait = bool(named.get("wait", True))
+        script_path = ""
+        try:
+            with tempfile.NamedTemporaryFile("w", suffix=".ps1", prefix="271-browser-", delete=False, encoding="utf-8") as script:
+                script.write(self.desktop_browser_script())
+                script_path = script.name
+            command = [
+                "powershell.exe",
+                "-NoProfile",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-Sta",
+                "-File",
+                script_path,
+                "-Home",
+                home,
+                "-Title",
+                title,
+                "-Width",
+                str(width),
+                "-Height",
+                str(height),
+                "-CleanupScript",
+                script_path,
+            ]
+            if wait:
+                completed = subprocess.run(command, cwd=self.base_dir, capture_output=True, text=True)
+                if completed.returncode != 0:
+                    message = (completed.stderr or completed.stdout or "Desktop Browser could not open.").strip()
+                    return Result.failure(message)
+                return Result.success(Instance("Desktop Browser Window", {
+                    "title": title,
+                    "home": home,
+                    "closed": True,
+                }))
+            process = subprocess.Popen(command, cwd=self.base_dir, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            return Result.success(Instance("Desktop Browser Window", {
+                "title": title,
+                "home": home,
+                "pid": process.pid,
+                "closed": False,
+            }))
+        except (OSError, ValueError) as error:
+            if script_path:
+                try:
+                    Path(script_path).unlink(missing_ok=True)
+                except OSError:
+                    pass
+            return Result.failure(f"Desktop Browser could not open: {error}")
+
+    def desktop_browser_script(self) -> str:
+        return r'''
+param(
+  [string]$Home = "https://example.com",
+  [string]$Title = "271 Browser",
+  [int]$Width = 1200,
+  [int]$Height = 780,
+  [string]$CleanupScript = ""
+)
+
+$ErrorActionPreference = "Stop"
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+[System.Windows.Forms.Application]::EnableVisualStyles()
+
+function Normalize-Address([string]$Text) {
+  if ([string]::IsNullOrWhiteSpace($Text)) {
+    return "about:blank"
+  }
+  $value = $Text.Trim()
+  if ($value -match "^[a-zA-Z][a-zA-Z0-9+.-]*:") {
+    return $value
+  }
+  if ($value -match "^[^\s]+\.[^\s]+") {
+    return "https://$value"
+  }
+  return "https://www.bing.com/search?q=$([System.Uri]::EscapeDataString($value))"
+}
+
+function New-BrowserButton([string]$Text) {
+  $button = New-Object System.Windows.Forms.Button
+  $button.Text = $Text
+  $button.Dock = "Fill"
+  $button.Margin = New-Object System.Windows.Forms.Padding(3)
+  return $button
+}
+
+$form = New-Object System.Windows.Forms.Form
+$form.Text = $Title
+$form.Width = [Math]::Max($Width, 760)
+$form.Height = [Math]::Max($Height, 480)
+$form.MinimumSize = New-Object System.Drawing.Size(760, 480)
+$form.StartPosition = "CenterScreen"
+
+$layout = New-Object System.Windows.Forms.TableLayoutPanel
+$layout.Dock = "Fill"
+$layout.ColumnCount = 1
+$layout.RowCount = 3
+[void]$layout.RowStyles.Add((New-Object System.Windows.Forms.RowStyle([System.Windows.Forms.SizeType]::Absolute, 44)))
+[void]$layout.RowStyles.Add((New-Object System.Windows.Forms.RowStyle([System.Windows.Forms.SizeType]::Percent, 100)))
+[void]$layout.RowStyles.Add((New-Object System.Windows.Forms.RowStyle([System.Windows.Forms.SizeType]::Absolute, 24)))
+
+$bar = New-Object System.Windows.Forms.TableLayoutPanel
+$bar.Dock = "Fill"
+$bar.ColumnCount = 7
+$bar.RowCount = 1
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 68)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 68)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 78)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 62)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 68)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Percent, 100)))
+[void]$bar.ColumnStyles.Add((New-Object System.Windows.Forms.ColumnStyle([System.Windows.Forms.SizeType]::Absolute, 62)))
+
+$back = New-BrowserButton "Back"
+$forward = New-BrowserButton "Forward"
+$reload = New-BrowserButton "Reload"
+$stop = New-BrowserButton "Stop"
+$homeButton = New-BrowserButton "Home"
+$go = New-BrowserButton "Go"
+
+$address = New-Object System.Windows.Forms.TextBox
+$address.Dock = "Fill"
+$address.Margin = New-Object System.Windows.Forms.Padding(4, 9, 4, 4)
+$address.Text = $Home
+
+$browser = New-Object System.Windows.Forms.WebBrowser
+$browser.Dock = "Fill"
+$browser.ScriptErrorsSuppressed = $true
+$browser.IsWebBrowserContextMenuEnabled = $true
+$browser.WebBrowserShortcutsEnabled = $true
+
+$status = New-Object System.Windows.Forms.Label
+$status.Dock = "Fill"
+$status.Text = "Ready"
+$status.TextAlign = "MiddleLeft"
+$status.Padding = New-Object System.Windows.Forms.Padding(8, 0, 0, 0)
+
+$navigate = {
+  $target = Normalize-Address $address.Text
+  $address.Text = $target
+  $browser.Navigate($target)
+}
+
+$back.Add_Click({ if ($browser.CanGoBack) { $browser.GoBack() } })
+$forward.Add_Click({ if ($browser.CanGoForward) { $browser.GoForward() } })
+$reload.Add_Click({ $browser.Refresh() })
+$stop.Add_Click({ $browser.Stop(); $status.Text = "Stopped" })
+$homeButton.Add_Click({ $address.Text = $Home; & $navigate })
+$go.Add_Click($navigate)
+$address.Add_KeyDown({
+  if ($_.KeyCode -eq [System.Windows.Forms.Keys]::Enter) {
+    $go.PerformClick()
+    $_.SuppressKeyPress = $true
+  }
+})
+
+$browser.Add_Navigating({
+  if ($_.Url) {
+    $status.Text = "Loading " + $_.Url.ToString()
+  } else {
+    $status.Text = "Loading"
+  }
+})
+$browser.Add_Navigated({
+  if ($browser.Url) {
+    $address.Text = $browser.Url.ToString()
+  }
+})
+$browser.Add_DocumentCompleted({
+  if ($browser.Url) {
+    $address.Text = $browser.Url.ToString()
+  }
+  if ($browser.DocumentTitle) {
+    $form.Text = "$($browser.DocumentTitle) - $Title"
+  } else {
+    $form.Text = $Title
+  }
+  $status.Text = "Ready"
+})
+$browser.Add_NewWindow({
+  $_.Cancel = $true
+  if ($browser.StatusText) {
+    $address.Text = $browser.StatusText
+    & $navigate
+  }
+})
+$form.Add_FormClosed({
+  if ($CleanupScript -and (Test-Path -LiteralPath $CleanupScript)) {
+    Start-Job -ScriptBlock {
+      param($Path)
+      Start-Sleep -Milliseconds 250
+      Remove-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
+    } -ArgumentList $CleanupScript | Out-Null
+  }
+})
+
+[void]$bar.Controls.Add($back, 0, 0)
+[void]$bar.Controls.Add($forward, 1, 0)
+[void]$bar.Controls.Add($reload, 2, 0)
+[void]$bar.Controls.Add($stop, 3, 0)
+[void]$bar.Controls.Add($homeButton, 4, 0)
+[void]$bar.Controls.Add($address, 5, 0)
+[void]$bar.Controls.Add($go, 6, 0)
+
+[void]$layout.Controls.Add($bar, 0, 0)
+[void]$layout.Controls.Add($browser, 0, 1)
+[void]$layout.Controls.Add($status, 0, 2)
+[void]$form.Controls.Add($layout)
+
+$browser.Navigate((Normalize-Address $Home))
+[void]$form.ShowDialog()
+'''
+
     def make_http_response(self, response: Any) -> tuple[int, bytes, str]:
         if self.is_map_value(response):
             status = int(response.get("status") or 200)
@@ -3941,7 +4165,7 @@ class SemanticChecker:
             return "Int" if key == "math round" else "Result"
         if key in {"float parse", "math sqrt"}:
             return "Float" if key == "math sqrt" else "Result"
-        if key in {"json parse", "json serialize", "file read", "file write", "file delete", "http get", "http post"}:
+        if key in {"json parse", "json serialize", "file read", "file write", "file delete", "http get", "http post", "desktop browser"}:
             return "Result"
         if key in {"async all", "async race"}:
             return "Task"

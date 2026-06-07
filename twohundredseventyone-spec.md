@@ -804,6 +804,15 @@ Make Data be Need Use Json of Response
 
 The local runner implements `Http Get`, `Http Post`, and `Http Serve`.
 
+Desktop:
+
+```271
+Make Window be Need Use Desktop Browser with Title be "271 Browser" and Home be "https://example.com"
+```
+
+The current Windows runner opens a native Windows Forms browser window with an
+address bar and navigation controls. It does not use Tkinter.
+
 Json:
 
 ```271

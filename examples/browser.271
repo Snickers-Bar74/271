@@ -1,0 +1,3 @@
+Note Opens a native Windows browser window without Tkinter
+Make Window be Need Use Desktop Browser with Title be "271 Browser" and Home be "https://example.com" and Width be 1200 and Height be 780
+Say "Browser closed"

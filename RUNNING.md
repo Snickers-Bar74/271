@@ -38,6 +38,7 @@ The scaffold includes `app.271`, `tests\app.271`, `271.package`, `271.py`,
 .\271.cmd run .\examples\module-names.271
 .\271.cmd run .\examples\package-demo.271
 .\271.cmd run .\examples\jew.271
+.\271.cmd run .\examples\browser.271
 .\271.cmd run .\examples\maybe-safety.271
 .\271.cmd run .\examples\map-tools.271
 .\271.cmd run .\examples\collection-safety.271
@@ -56,6 +57,9 @@ calls, async task groups, JSON, and time formatting.
 
 The `jew.271` example shows the preloaded alias requested for this workspace:
 `Say jew`, `Say "jew"`, and `Say "{jew}"` all print `271`.
+
+The `browser.271` example opens a native Windows desktop browser window with an
+address bar, Back, Forward, Reload, Stop, Home, and Go. It does not use Tkinter.
 
 The `maybe-safety.271` example shows that values that can be `nothing` must say
 `as Maybe ...` before they are stored.
