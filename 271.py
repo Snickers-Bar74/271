@@ -2320,7 +2320,7 @@ class Runner:
                 "-Sta",
                 "-File",
                 script_path,
-                "-Home",
+                "-StartUrl",
                 home,
                 "-Title",
                 title,
@@ -2359,7 +2359,7 @@ class Runner:
     def desktop_browser_script(self) -> str:
         return r'''
 param(
-  [string]$Home = "https://example.com",
+  [string]$StartUrl = "https://example.com",
   [string]$Title = "271 Browser",
   [int]$Width = 1200,
   [int]$Height = 780,
@@ -2430,7 +2430,7 @@ $go = New-BrowserButton "Go"
 $address = New-Object System.Windows.Forms.TextBox
 $address.Dock = "Fill"
 $address.Margin = New-Object System.Windows.Forms.Padding(4, 9, 4, 4)
-$address.Text = $Home
+$address.Text = $StartUrl
 
 $browser = New-Object System.Windows.Forms.WebBrowser
 $browser.Dock = "Fill"
@@ -2454,7 +2454,7 @@ $back.Add_Click({ if ($browser.CanGoBack) { $browser.GoBack() } })
 $forward.Add_Click({ if ($browser.CanGoForward) { $browser.GoForward() } })
 $reload.Add_Click({ $browser.Refresh() })
 $stop.Add_Click({ $browser.Stop(); $status.Text = "Stopped" })
-$homeButton.Add_Click({ $address.Text = $Home; & $navigate })
+$homeButton.Add_Click({ $address.Text = $StartUrl; & $navigate })
 $go.Add_Click($navigate)
 $address.Add_KeyDown({
   if ($_.KeyCode -eq [System.Windows.Forms.Keys]::Enter) {
@@ -2516,7 +2516,7 @@ $form.Add_FormClosed({
 [void]$layout.Controls.Add($status, 0, 2)
 [void]$form.Controls.Add($layout)
 
-$browser.Navigate((Normalize-Address $Home))
+$browser.Navigate((Normalize-Address $StartUrl))
 [void]$form.ShowDialog()
 '''
 
