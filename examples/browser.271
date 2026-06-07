@@ -1,3 +1,295 @@
-Note Opens a native Windows browser window without Tkinter
-Make Window be Need Use Desktop Browser with Title be "271 Browser" and Home be "https://example.com" and Width be 1200 and Height be 780
-Say "Browser closed"
+Note one-file 271 text browser
+Note No Tkinter, no window host, no packages, no helper files
+
+Record Browser Page
+  Has Url as String
+  Has Title as String
+  Has Text as String
+  Has Links as List of String
+
+Record Browser State
+  Has Home Url as String
+  Has Current Url as String
+  Has History as List of String
+  Has Position as Int
+  Has Links as List of String
+
+Teach Normalize Url using Text as String returns String
+  Make Clean be Use String Trim with Text
+  If Clean is ""
+    "https://example.com"
+  Otherwise if Use String Starts With with Clean and "http://"
+    Clean
+  Otherwise if Use String Starts With with Clean and "https://"
+    Clean
+  Otherwise if Use String Contains with Clean and "."
+    "https://{Clean}"
+  Otherwise
+    Make Query be Use Regex Replace with Clean and Pattern be "\s+" and With be "+"
+    "https://duckduckgo.com/html/?q={Query}"
+
+Teach Base Root using Url as String returns String
+  Use Regex Replace with Url and Pattern be "^(https?://[^/]+).*" and With be "\1"
+
+Teach Resolve Link using Base as String and Link as String returns String
+  Make Clean be Use String Trim with Link
+  If Use String Starts With with Clean and "http://"
+    Clean
+  Otherwise if Use String Starts With with Clean and "https://"
+    Clean
+  Otherwise if Use String Starts With with Clean and "//"
+    "https:{Clean}"
+  Otherwise if Use String Starts With with Clean and "/"
+    Make Root be Use Base Root with Base
+    "{Root}{Clean}"
+  Otherwise
+    Make Root be Use Base Root with Base
+    "{Root}/{Clean}"
+
+Teach Include Link using Link as String returns Bool
+  Make Clean be Use String Trim with Link
+  If Clean is ""
+    false
+  Otherwise if Use String Starts With with Clean and "#"
+    false
+  Otherwise if Use String Starts With with Use String Lower with Clean and "javascript:"
+    false
+  Otherwise if Use String Starts With with Use String Lower with Clean and "mailto:"
+    false
+  Otherwise if Use String Starts With with Use String Lower with Clean and "tel:"
+    false
+  Otherwise
+    true
+
+Teach First Text using Items as List and Otherwise as String returns String
+  Make Maybe Value be Item 0 of Items as Maybe String
+  Match Maybe Value
+    When Some Value
+      Value
+    When nothing
+      Otherwise
+
+Teach Title From Html using Html as String returns String
+  Make Lower be Use String Lower with Html
+  Make Title Pieces be Use String Split with Lower and By be "<title>"
+  Make Maybe Rest be Item 1 of Title Pieces as Maybe String
+  Match Maybe Rest
+    When Some Rest
+      Make End Pieces be Use String Split with Rest and By be "</title>"
+      Make Raw Title be Use First Text with End Pieces and "untitled"
+      Use String Trim with Raw Title
+    When nothing
+      "untitled"
+
+Teach Text From Html using Html as String returns String
+  Make Clean be Use Regex Replace with Html and Pattern be "(?is)<script[^>]*>.*?</script>" and With be " "
+  Change Clean to Use Regex Replace with Clean and Pattern be "(?is)<style[^>]*>.*?</style>" and With be " "
+  Change Clean to Use Regex Replace with Clean and Pattern be "<[^>]+>" and With be " "
+  Change Clean to Use Regex Replace with Clean and Pattern be "&nbsp;" and With be " "
+  Change Clean to Use Regex Replace with Clean and Pattern be "&amp;" and With be "and"
+  Change Clean to Use Regex Replace with Clean and Pattern be "&lt;" and With be "<"
+  Change Clean to Use Regex Replace with Clean and Pattern be "&gt;" and With be ">"
+  Change Clean to Use Regex Replace with Clean and Pattern be "&quot;" and With be "'"
+  Change Clean to Use Regex Replace with Clean and Pattern be "\s+" and With be " "
+  Use String Trim with Clean
+
+Teach First Words using Text as String and Limit as Int returns String
+  Make Words be Use String Split with Text and By be " "
+  Make Picked be Empty List as List of String
+  Make Count be 0
+  Repeat for Word in Words
+    If Count is at least Limit
+      Stop
+    Make Clean be Use String Trim with Word
+    If Clean is ""
+      Skip
+    Use List Add with Picked and Clean
+    Change Count to Count plus 1
+  Use String Join with Picked and By be " "
+
+Teach Links From Html using Html as String and Base as String returns List of String
+  Make Normal be Use Regex Replace with Html and Pattern be "\x22" and With be "'"
+  Change Normal to Use Regex Replace with Normal and Pattern be "(?i)href\s*=\s*'" and With be "href='"
+  Make Segments be Use String Split with Normal and By be "href='"
+  Make Links be Empty List as List of String
+  Repeat for Index and Segment in Indexed Segments
+    If Index is 0
+      Skip
+    If Length of Links is at least 20
+      Stop
+    Make Pieces be Use String Split with Segment and By be "'"
+    Make Maybe Raw be Item 0 of Pieces as Maybe String
+    Match Maybe Raw
+      When Some Raw
+        Make Link be Use String Trim with Raw
+        If Use Include Link with Link
+          Make Full Link be Use Resolve Link with Base and Link
+          Use List Add with Links and Full Link
+      When nothing
+        Skip
+  Links
+
+Teach Load Page using Url as String returns Browser Page
+  Make Final Url be Use Normalize Url with Url
+  Make Response be Need Use Http Get with Final Url
+  Make Html be Use Text of Response
+  Make Title be Use Title From Html with Html
+  Make Text be Use Text From Html with Html
+  Make Links be Use Links From Html with Html and Final Url
+  New Browser Page with Url be Final Url and Title be Title and Text be Text and Links be Links
+
+Teach Print Divider
+  Say "----------------------------------------------------------------"
+
+Teach Print Links using Links as List of String
+  If Length of Links is 0
+    Say "No links found on this page."
+  Otherwise
+    Say "Links:"
+    Repeat for Index and Link in Indexed Links
+      Make Number be Index plus 1
+      Say "  {Number}. {Link}"
+
+Teach Print Page using Page as Browser Page
+  Use Print Divider
+  Say "271 browser"
+  Say "Url: {Url of Page}"
+  Say "Title: {Title of Page}"
+  Use Print Divider
+  Say Use First Words with Text of Page and 220
+  Use Print Divider
+  Use Print Links with Links of Page
+  Use Print Divider
+
+Teach Add History using State as Browser State and Url as String
+  Make Next History be Empty List as List of String
+  Repeat for Index and Entry in Indexed History of State
+    If Index is at most Position of State
+      Use List Add with Next History and Entry
+  Use List Add with Next History and Url
+  Change History of State to Next History
+  Change Position of State to Length of Next History minus 1
+
+Teach Visit using State as Browser State and Url as String and Save History as Bool
+  Try
+    Make Page be Use Load Page with Url
+    Change Current Url of State to Url of Page
+    Change Links of State to Links of Page
+    If Save History
+      Use Add History with State and Url of Page
+    Use Print Page with Page
+  Catch Error
+    Say "Could not open {Url}: {Use Message of Error}"
+
+Teach Go Back using State as Browser State
+  If Position of State is at most 0
+    Say "No page behind you."
+  Otherwise
+    Make Next Position be Position of State minus 1
+    Change Position of State to Next Position
+    Make Maybe Url be Item Next Position of History of State as Maybe String
+    Match Maybe Url
+      When Some Url
+        Use Visit with State and Url and false
+      When nothing
+        Say "History is missing that page."
+
+Teach Go Forward using State as Browser State
+  Make Last Position be Length of History of State minus 1
+  If Position of State is at least Last Position
+    Say "No page ahead of you."
+  Otherwise
+    Make Next Position be Position of State plus 1
+    Change Position of State to Next Position
+    Make Maybe Url be Item Next Position of History of State as Maybe String
+    Match Maybe Url
+      When Some Url
+        Use Visit with State and Url and false
+      When nothing
+        Say "History is missing that page."
+
+Teach Open Target using State as Browser State and Target as String
+  Make Clean be Use String Trim with Target
+  If Clean is ""
+    Say "Open needs a URL, search text, or link number."
+  Otherwise
+    Match Use Int Parse with Clean
+      When Success Number
+        Make Link Index be Number minus 1
+        Make Maybe Link be Item Link Index of Links of State as Maybe String
+        Match Maybe Link
+          When Some Link
+            Use Visit with State and Link and true
+          When nothing
+            Say "There is no link number {Number}."
+      When Failure Error
+        Use Visit with State and Clean and true
+
+Teach Print Help
+  Make Help be Text
+    Commands:
+    open URL       open a URL or search text
+    open NUMBER    open a link from the current page
+    NUMBER         same as open NUMBER
+    back           go back
+    forward        go forward
+    reload         reload current page
+    home           open the home page
+    links          print current links again
+    help           show commands
+    quit           close the browser
+  Say Help
+
+Teach Handle Command using State as Browser State and Line as String returns Bool
+  Make Trimmed be Use String Trim with Line
+  Make Parts be Use String Split with Trimmed and By be " "
+  Match Parts
+    When List with ""
+      true
+    When List with "quit"
+      false
+    When List with "exit"
+      false
+    When List with "help"
+      Use Print Help
+      true
+    When List with "back"
+      Use Go Back with State
+      true
+    When List with "forward"
+      Use Go Forward with State
+      true
+    When List with "reload"
+      Use Visit with State and Current Url of State and false
+      true
+    When List with "home"
+      Use Visit with State and Home Url of State and true
+      true
+    When List with "links"
+      Use Print Links with Links of State
+      true
+    When List with "open" and Target
+      Use Open Target with State and Target
+      true
+    When List starting with "open" and many Words
+      Make Target be Use String Join with Words and By be " "
+      Use Open Target with State and Target
+      true
+    When List with Number Text
+      Use Open Target with State and Number Text
+      true
+    When anything
+      Use Open Target with State and Trimmed
+      true
+
+Teach Main
+  Make Home Url be "https://example.com"
+  Make State be New Browser State with Home Url be Home Url and Current Url be Home Url and History be Empty List and Position be -1 and Links be Empty List
+  Say "271 browser: one file, only 271. Type help for commands."
+  Use Visit with State and Home Url and true
+  Use Print Help
+  Make Running be true
+  Repeat while Running
+    Make Line be Ask "browser"
+    Change Running to Use Handle Command with State and Line
+  Say "Browser closed."

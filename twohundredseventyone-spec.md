@@ -804,14 +804,10 @@ Make Data be Need Use Json of Response
 
 The local runner implements `Http Get`, `Http Post`, and `Http Serve`.
 
-Desktop:
-
-```271
-Make Window be Need Use Desktop Browser with Title be "271 Browser" and Home be "https://example.com"
-```
-
-The current Windows runner opens a native Windows Forms browser window with an
-address bar and navigation controls. It does not use Tkinter.
+The `examples/browser.271` program is a one-file text browser written only in
+271. It uses `Http Get`, `Regex Replace`, strings, lists, records, and terminal
+input to fetch pages, clean their HTML into readable text, extract links, and
+keep back/forward history.
 
 Json:
 

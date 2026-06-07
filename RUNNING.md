@@ -52,14 +52,15 @@ The scaffold includes `app.271`, `tests\app.271`, `271.package`, `271.py`,
 ```
 
 This runs variables, constants, records, methods, closures, list map/filter,
-maps, map helpers, any-value map keys, typed collection updates, ranges, explicit maybe values, explicit result handling, type-safe mutation, exhaustive union matching, checked channel messages, destructuring, field-pattern matching, results, parent method
+maps, map helpers, any-value map keys, typed collection updates, a one-file text browser, ranges, explicit maybe values, explicit result handling, type-safe mutation, exhaustive union matching, checked channel messages, destructuring, field-pattern matching, results, parent method
 calls, async task groups, JSON, and time formatting.
 
 The `jew.271` example shows the preloaded alias requested for this workspace:
 `Say jew`, `Say "jew"`, and `Say "{jew}"` all print `271`.
 
-The `browser.271` example opens a native Windows desktop browser window with an
-address bar, Back, Forward, Reload, Stop, Home, and Go. It does not use Tkinter.
+The `browser.271` example is a one-file text browser written only in 271. It
+fetches pages, extracts readable text and links, and supports open, link
+numbers, back, forward, reload, home, help, and quit.
 
 The `maybe-safety.271` example shows that values that can be `nothing` must say
 `as Maybe ...` before they are stored.
