@@ -1,0 +1,34 @@
+Bring Http
+Bring Time
+
+Record Greeting
+  Has Name as String
+  Has Message as String
+  Has Created At as String
+
+Teach Make Greeting using Name
+  Make Now be Use Time Now
+  Make Created be Use Time Format with Now and "yyyy-mm-dd hh:ss"
+  Make Message be "Hello {Name}"
+  New Greeting with Name be Name and Message be Message and Created At be Created
+
+Teach Handle using Request
+  Match Request
+    When Http Get with Path be "/"
+      Use Http Response with Text be "twohundredseventyone API"
+    When Http Get with Path be "/hello"
+      Make Actual Name be Match Query "name" of Request
+        When Some Name
+          Name
+        When nothing
+          "world"
+      Make Greeting be Use Make Greeting with Actual Name
+      Use Http Response with Json be Greeting
+    When Http Post with Path be "/hello"
+      Make Body be Need Use Json of Request
+      Make Greeting be Use Make Greeting with Name of Body
+      Use Http Response with Status be 201 and Json be Greeting
+    When anything
+      Use Http Response with Status be 404 and Text be "Not found"
+
+Use Http Serve with Port be 2710 and Handle be Handle

@@ -1,0 +1,30 @@
+Make Missing be nothing as Maybe String
+Match Missing
+  When Some Value
+    Expect false is true
+  When nothing
+    Expect true is true
+
+Make Present be Some "Ada" as Maybe String
+Match Present
+  When Some Name
+    Expect Name is "Ada"
+  When nothing
+    Expect false is true
+
+Make Names be List with "Ada" and "Grace"
+Make Maybe First be Item 0 of Names as Maybe String
+Match Maybe First
+  When Some First
+    Expect First is "Ada"
+  When nothing
+    Expect false is true
+
+Make Inbox be New Channel of String with Capacity be 1
+Send "ready" to Inbox
+Make Maybe Message be Await Receive from Inbox as Maybe String
+Match Maybe Message
+  When Some Message
+    Expect Message is "ready"
+  When nothing
+    Expect false is true

@@ -1,0 +1,16 @@
+Make Missing be nothing as Maybe String
+
+Match Missing
+  When Some Value
+    Say Value
+  When nothing
+    Say "missing"
+
+Make Names be List with "Ada" and "Grace"
+Make Maybe First be Item 0 of Names as Maybe String
+
+Match Maybe First
+  When Some First
+    Say "first {First}"
+  When nothing
+    Say "no first"

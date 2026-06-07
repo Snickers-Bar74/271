@@ -1,0 +1,26 @@
+Teach Finish Later using Label and Delay
+  Use Time Sleep with Seconds be Delay
+  Success Label
+
+Teach Fail Later using Message
+  Failure Message
+
+Make Task A be Spawn Use Finish Later with "alpha" and 0.01
+Make Task B be Spawn Use Finish Later with "beta" and 0.02
+Make Tasks be List with Task A and Task B
+Make All Values be Need Await Use Async All with Tasks
+Expect Item 0 of All Values is "alpha"
+Expect Item 1 of All Values is "beta"
+
+Make Slow be Spawn Use Finish Later with "slow" and 0.05
+Make Fast be Spawn Use Finish Later with "fast" and 0
+Make Race Tasks be List with Slow and Fast
+Make Race Result be Need Await Use Async Race with Race Tasks
+Expect Race Result is "fast"
+
+Make Failed be Spawn Use Fail Later with "not ready"
+Try
+  Make Ignored be Need Await Use Async All with List with Failed
+  Expect false is true
+Catch Error
+  Expect Error is "not ready"

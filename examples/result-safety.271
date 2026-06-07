@@ -1,0 +1,10 @@
+Ignore Result Use Int Parse with "not a number"
+
+Make Number be Need Use Int Parse with "271"
+Say "parsed {Number}"
+
+Try
+  Make Missing be Need Use Int Parse with "bad"
+  Say Missing
+Catch Error
+  Say Use Message of Error

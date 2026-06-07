@@ -1,0 +1,12 @@
+Teach Add using Left and Right
+  Left plus Right
+
+Teach Twice using Number
+  Use Add with Number and Number
+
+Expect Use Add with 2 and 3 is 5
+Expect Use Twice with 9 is 18
+
+Make Values be List with 1 and 2 and 3
+Make Doubled be Use List Map with Values and Teach using Number give Number times 2
+Expect Item 2 of Doubled is 6

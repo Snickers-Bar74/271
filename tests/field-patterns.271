@@ -1,0 +1,37 @@
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make Player be New Player with Name be "Ada" and Score be 271
+
+Match Player
+  When Player with Name be "Ada" and Score be Score
+    Expect Score is 271
+  When anything
+    Expect false is true
+
+Match Player
+  When Player with Name be "Grace" and Score be Score
+    Expect false is true
+  When Player with Name be Name and Score be Int named Points
+    Expect Name is "Ada"
+    Expect Points is 271
+  When anything
+    Expect false is true
+
+Make Tags be List with "primary"
+Make Event be Map with "kind" meaning "click" and "x" meaning 10 and "tags" meaning Tags
+
+Match Event
+  When Map with "kind" meaning "click" and "x" meaning X and "tags" meaning List with Tag
+    Expect X is 10
+    Expect Tag is "primary"
+  When anything
+    Expect false is true
+
+Make Maybe Event be Map with "score" meaning Some 12
+Match Maybe Event
+  When Map with "score" meaning Some Score
+    Expect Score is 12
+  When anything
+    Expect false is true

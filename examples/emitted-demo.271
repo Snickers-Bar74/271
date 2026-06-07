@@ -1,0 +1,14 @@
+Keep Limit be 4
+
+Teach Add using Left and Right
+  Left plus Right
+
+Make Total be 0
+
+Repeat for Number in Range from 1 to Limit
+  Change Total to Use Add with Total and Number
+
+If Total is 10
+  Say "emitted total {Total}"
+Otherwise
+  Say "unexpected {Total}"

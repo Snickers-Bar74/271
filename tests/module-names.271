@@ -1,0 +1,6 @@
+Bring "modules/math-tools.271" names Triple and Box
+
+Expect Use Triple with 4 is 12
+
+Make Box be New Box with Value be 12
+Expect Use Label of Box is "Box 12"

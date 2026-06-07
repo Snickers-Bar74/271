@@ -1,0 +1,39 @@
+Make Key be List with 1 and 2
+Make Data be Map with Key meaning "pair" and "name" meaning "Ada"
+
+Expect Use Map Has with Data and Key is true
+
+Make Maybe Pair be Use Map Get with Data and Key as Maybe String
+Match Maybe Pair
+  When Some Pair
+    Expect Pair is "pair"
+  When nothing
+    Expect false is true
+
+Make Missing be Use Map Get with Data and "missing" as Maybe String
+Match Missing
+  When Some Value
+    Expect false is true
+  When nothing
+    Expect true is true
+
+Make Name be Use Map Get with Data and "missing" and Otherwise be "fallback"
+Expect Name is "fallback"
+
+Use Map Put with Data and "score" and 271
+Expect Use Map Get with Data and "score" and Otherwise be 0 is 271
+
+Make Keys be Use Map Keys with Data
+Make Values be Use Map Values with Data
+Make Entries be Use Map Entries with Data
+Expect Length of Keys is 3
+Expect Length of Values is 3
+Expect Length of Entries is 3
+
+Make Other be Map with "score" meaning 300 and "language" meaning "271"
+Make Merged be Use Map Merge with Data and Other
+Expect Use Map Get with Merged and "score" and Otherwise be 0 is 300
+Expect Use Map Get with Data and "score" and Otherwise be 0 is 271
+
+Use Map Remove with Data and "score"
+Expect Use Map Has with Data and "score" is false

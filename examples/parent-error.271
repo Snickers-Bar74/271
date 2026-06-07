@@ -1,0 +1,15 @@
+Note Expected Error
+
+Object Account
+  Has Name as String
+
+  Teach Label using Self returns String
+    Name of Self
+
+Object Premium Account extends Account
+  Has Level as Int
+
+  Teach Broken using Self returns String
+    Use Parent Missing Label of Self
+
+Use Parent Label of New Account with Name be "Ada"

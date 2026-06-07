@@ -1,0 +1,9 @@
+Note Expected Error
+Teach Add Later using Items and Value
+  Use List Add with Items and Value
+  Success "added"
+
+Make Numbers be Empty List as List of Int
+Make Worker be Spawn Use Add Later with Numbers and "wrong"
+Make Added be Await Worker
+Say Added

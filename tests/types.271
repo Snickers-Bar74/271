@@ -1,0 +1,16 @@
+Type User Id means Int
+
+Record User
+  Has Id as User Id
+  Has Name as String
+  Has Tags as List of String
+  Has Nickname as Maybe String
+
+Teach Birthday using Age as Int
+  Age plus 1
+
+Make Ada be New User with Id be 1 and Name be "Ada" and Tags be List with "math" and "code" and Nickname be nothing
+Expect Name of Ada is "Ada"
+Expect Use Birthday with 36 is 37
+Make Bytes be List with 1 and 2 and 3 as List of Int
+Expect Item 1 of Bytes is 2

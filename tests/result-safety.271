@@ -1,0 +1,18 @@
+Ignore Result Failure "explicitly ignored"
+Ignore Result Use Int Parse with "not a number"
+
+Make Number be Need Use Int Parse with "271"
+Expect Number is 271
+
+Make Parsed be Use Int Parse with "7"
+Match Parsed
+  When Success Value
+    Expect Value is 7
+  When Failure Error
+    Expect false is true
+
+Try
+  Make Missing be Need Use Int Parse with "bad"
+  Expect false is true
+Catch Error
+  Expect Use String Contains with Use Message of Error and "not an integer" is true

@@ -1,0 +1,13 @@
+Note Expected Error
+
+Make One and Two be Tuple with 1
+Make A and B be 271
+
+Make Ada and Grace be Map with "Ada" meaning 10
+
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make Person be New Player with Name be "Linus" and Score be 271
+Make Name and Missing Field be Person

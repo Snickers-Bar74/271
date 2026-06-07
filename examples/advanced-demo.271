@@ -1,0 +1,69 @@
+Bring String
+Bring List
+Bring Json
+Bring Time
+
+Keep Greeting Prefix be "Hello"
+
+Record Person
+  Has Name as String
+  Has Age as Int
+
+  Teach Label using Self
+    "{Name of Self} is {Age of Self}"
+
+Teach Add using Left and Right
+  Left plus Right
+
+Teach Make Greeter using Prefix
+  Teach using Name give "{Prefix}, {Name}"
+
+Make Number be 3
+Make Total be Use Add with Number and 4
+Say "Total is {Total}"
+
+Make Names be List with "Ada" and "Grace" and "Linus"
+Make Loud Names be Use List Map with Names and Teach using Name give Use String Upper with Name
+Say Loud Names
+
+Make Long Names be Use List Filter with Names and Teach using Name give Length of Name is greater than 3
+Say Long Names
+
+Make Scores be Map with "Ada" meaning 10 and "Grace" meaning 12
+Say Scores
+
+Make Person be New Person with Name be "Ada" and Age be 37
+Say Use Label of Person
+
+Make Greet be Use Make Greeter with Greeting Prefix
+Say Use Greet with "world"
+
+If Total is at least 7
+  Say "math works"
+Otherwise
+  Say "math is confused"
+
+Repeat for Index and Name in Indexed Names
+  Say "{Index}: {Name}"
+
+Repeat for Step in Range from 1 to 3
+  Say "step {Step}"
+
+Make Maybe Name be Item 0 of Names as Maybe String
+Match Maybe Name
+  When Some First Name
+    Say "first is {First Name}"
+  When nothing
+    Say "no names"
+
+Match Use Int Parse with "271"
+  When Success Parsed
+    Say "parsed {Parsed}"
+  When Failure Error
+    Say Error
+
+Make Json Text be Need Use Json Serialize with Scores
+Say Json Text
+
+Make Today be Use Time Format with Use Time Now and "yyyy-mm-dd"
+Say "today is {Today}"

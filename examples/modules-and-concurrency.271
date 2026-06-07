@@ -1,0 +1,20 @@
+Bring "math-tools.271"
+
+Teach Send Later using Outbox and Value
+  Send Value to Outbox
+  Success "sent"
+
+Make Number be Use Triple with 9
+Say "triple is {Number}"
+
+Make Box be New Box with Value be Number
+Say Use Label of Box
+
+Make Outbox be New Channel of Int with Capacity be 2
+Make Worker be Spawn Use Send Later with Outbox and 271
+Make Message be Await Receive from Outbox as Maybe Int
+Make Result be Await Worker
+
+Say "message {Message}"
+Say Result
+Use Close of Outbox

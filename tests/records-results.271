@@ -1,0 +1,21 @@
+Bring Json
+
+Record User
+  Has Name as String
+  Has Score as Int
+
+  Teach Label using Self
+    "{Name of Self}: {Score of Self}"
+
+Make User be New User with Name be "Ada" and Score be 271
+Expect Name of User is "Ada"
+Expect Use Label of User is "Ada: 271"
+
+Match Use Int Parse with "271"
+  When Success Number
+    Expect Number is 271
+  When Failure Error
+    Expect false is true
+
+Make Text be Need Use Json Serialize with Map with "score" meaning 271
+Expect Use String Contains with Text and "271" is true

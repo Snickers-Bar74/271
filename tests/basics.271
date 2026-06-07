@@ -1,0 +1,6 @@
+Make Number be 3
+Keep Limit be 10
+Expect Number plus 4 is 7
+Change Number to Number times 2
+Expect Number is 6
+Expect Limit is 10

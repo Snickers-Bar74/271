@@ -1,0 +1,21 @@
+Make Count be 1
+Change Count to Count plus 1
+Expect Count is 2
+
+Make Maybe Name be nothing as Maybe String
+Change Maybe Name to "Ada"
+Match Maybe Name
+  When Some Name
+    Expect Name is "Ada"
+  When nothing
+    Expect false is true
+
+Record Profile
+  Has Name as String
+  Has Age as Int
+
+Make Ada be New Profile with Name be "Ada" and Age be 36
+Change Name of Ada to "Ada Lovelace"
+Change Age of Ada to Age of Ada plus 1
+Expect Name of Ada is "Ada Lovelace"
+Expect Age of Ada is 37

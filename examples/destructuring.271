@@ -1,0 +1,19 @@
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make Pair be Tuple with 7 and 8
+Make First and Second be Pair
+Say "tuple total {First plus Second}"
+
+Make Scores be Map with "Ada" meaning 10 and "Grace" meaning 12
+Make Ada and Grace be Scores
+Say "map total {Ada plus Grace}"
+
+Make Player be New Player with Name be "Linus" and Score be 271
+Make Name and Score be Player
+Say "{Name} scored {Score}"
+
+Make Labels be Set with "beta" and "alpha"
+Make Alpha and Beta be Labels
+Say "{Alpha} then {Beta}"

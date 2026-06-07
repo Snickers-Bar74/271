@@ -1,0 +1,8 @@
+Teach Friendly Greeting using Name
+  "Hello {Name}, from a package"
+
+Record Package Box
+  Has Value as String
+
+  Teach Label using Self
+    "Package box {Value of Self}"

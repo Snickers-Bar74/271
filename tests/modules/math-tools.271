@@ -1,0 +1,8 @@
+Teach Triple using Number
+  Number times 3
+
+Record Box
+  Has Value as Int
+
+  Teach Label using Self
+    "Box {Value of Self}"

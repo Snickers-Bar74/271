@@ -1,0 +1,20 @@
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make Player be New Player with Name be "Ada" and Score be 271
+
+Match Player
+  When Player with Name be "Ada" and Score be Score
+    Say "record score {Score}"
+  When anything
+    Say "unknown player"
+
+Make Tags be List with "primary"
+Make Event be Map with "kind" meaning "click" and "x" meaning 10 and "tags" meaning Tags
+
+Match Event
+  When Map with "kind" meaning "click" and "x" meaning X and "tags" meaning List with Tag
+    Say "event x {X}, tag {Tag}"
+  When anything
+    Say "unknown event"

@@ -1,0 +1,12 @@
+Make Numbers be Empty List as List of Int
+Use List Add with Numbers and 1
+Use List Replace At with Numbers and 0 and 271
+Expect Item 0 of Numbers is 271
+
+Make Names be Empty Set as Set of String
+Use Set Add with Names and "Ada"
+Expect Length of Names is 1
+
+Make Scores be Empty Map as Map of String to Int
+Use Map Put with Scores and "Ada" and 271
+Expect Use Map Get with Scores and "Ada" and Otherwise be 0 is 271

@@ -1,0 +1,10 @@
+Note Expected Error
+
+Teach Send Later using Outbox and Value
+  Send Value to Outbox
+  Success "sent"
+
+Make Inbox be New Channel of Int with Capacity be 1
+Make Worker be Spawn Use Send Later with Inbox and "wrong"
+Make Result be Await Worker
+Say Result

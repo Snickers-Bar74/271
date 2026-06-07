@@ -1,0 +1,10 @@
+Note Expected Error
+
+Make Missing be nothing
+Make Present be Some "Ada"
+
+Make Names be List with "Ada" and "Grace"
+Make Maybe First be Item 0 of Names
+
+Make Inbox be New Channel of String with Capacity be 1
+Make Maybe Message be Await Receive from Inbox

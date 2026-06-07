@@ -1,0 +1,12 @@
+Note Expected Error
+
+Object Account
+  Has Name as String
+  Private Has Pin as String
+
+  Private Teach Reveal Pin using Self
+    Pin of Self
+
+Make Basic be New Account with Name be "Ada" and Pin be "secret"
+Say Pin of Basic
+Say Use Reveal Pin of Basic

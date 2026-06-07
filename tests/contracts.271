@@ -1,0 +1,20 @@
+Contract Labeled
+  Teach Label using Self
+
+Record User follows Labeled
+  Has Name as String
+
+  Teach Label using Self
+    "User {Name of Self}"
+
+Object Counter follows Labeled
+  Has Value as Int
+
+  Teach Label using Self
+    "Counter {Value of Self}"
+
+Make Ada be New User with Name be "Ada"
+Make Count be New Counter with Value be 3
+
+Expect Use Label of Ada is "User Ada"
+Expect Use Label of Count is "Counter 3"

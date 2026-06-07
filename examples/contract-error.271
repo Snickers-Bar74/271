@@ -1,0 +1,5 @@
+Contract Labeled
+  Teach Label using Self
+
+Record User follows Labeled
+  Has Name as String

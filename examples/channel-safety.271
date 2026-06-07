@@ -1,0 +1,12 @@
+Make Inbox be New Channel of String with Capacity be 2
+
+Send "ready" to Inbox
+Make Message be Await Receive from Inbox as Maybe String
+
+Match Message
+  When Some Text
+    Say Text
+  When nothing
+    Say "closed"
+
+Use Close of Inbox

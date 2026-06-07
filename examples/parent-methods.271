@@ -1,0 +1,25 @@
+Object Account
+  Has Name as String
+
+  Teach Label using Self returns String
+    Name of Self
+
+  Teach Describe With using Self and Prefix as String returns String
+    "{Prefix}: {Name of Self}"
+
+Object Premium Account extends Account
+  Has Level as Int
+
+  Teach Label using Self returns String
+    "{Use Parent Label of Self} level {Level of Self}"
+
+  Teach Describe With using Self and Prefix as String returns String
+    "{Use Parent Describe With of Self with Prefix} level {Level of Self}"
+
+Teach Welcome Account using Account Person as Account returns String
+  Use Label of Account Person
+
+Make Premium be New Premium Account with Name be "Grace" and Level be 2
+Say Use Label of Premium
+Say Use Describe With of Premium with "VIP"
+Say Use Welcome Account with Premium

@@ -1,0 +1,27 @@
+Make Mood be If true
+  "bright"
+Otherwise
+  "dim"
+
+Make Other Mood be If false
+  "bright"
+Otherwise
+  "dim"
+
+Make Report be Map with
+  "mood" meaning Mood
+  "number" meaning jew
+
+Expect Mood is "bright"
+Expect Other Mood is "dim"
+Expect Item "mood" of Report is "bright"
+Expect Item "number" of Report is 271
+
+Teach Describe using Done as Bool
+  Make State be If Done
+    "done"
+  Otherwise
+    "open"
+  State
+
+Expect Use Describe with true is "done"

@@ -1,0 +1,6 @@
+Bring Package "friendly-tools/greetings.271" names Friendly Greeting and Package Box
+
+Expect Use Friendly Greeting with "Ada" is "Hello Ada, from a package"
+
+Make Box be New Package Box with Value be "ready"
+Expect Use Label of Box is "Package box ready"

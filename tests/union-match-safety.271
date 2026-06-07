@@ -1,0 +1,39 @@
+Type Command means Add Command or Done Command or Quit Command
+
+Record Add Command
+  Has Title as String
+
+Record Done Command
+  Has Id as Int
+
+Record Quit Command
+
+Make First be New Add Command with Title be "write tests" as Command
+Make First Label be Match First
+  When Add Command with Title be Title
+    "add {Title}"
+  When Done Command
+    "done"
+  When Quit Command
+    "quit"
+Expect First Label is "add write tests"
+
+Make Second be New Done Command with Id be 7 as Command
+Make Second Label be Match Second
+  When Add Command
+    "add"
+  When Done Command named Done
+    "done {Id of Done}"
+  When Quit Command
+    "quit"
+Expect Second Label is "done 7"
+
+Make Third be New Quit Command as Command
+Make Third Label be Match Third
+  When Add Command
+    "add"
+  When Done Command
+    "done"
+  When Quit Command
+    "quit"
+Expect Third Label is "quit"

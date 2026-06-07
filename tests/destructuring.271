@@ -1,0 +1,33 @@
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make First and Second be Tuple with 7 and 8
+Expect First plus Second is 15
+
+Make Low and High be List with 1 and 9
+Expect High minus Low is 8
+
+Make Alpha and Beta be Set with "beta" and "alpha"
+Expect Alpha is "alpha"
+Expect Beta is "beta"
+
+Make Scores be Map with "Ada" meaning 10 and "Grace" meaning 12
+Make Ada and Grace be Scores
+Expect Ada plus Grace is 22
+
+Make Person be New Player with Name be "Linus" and Score be 271
+Make Name and Score be Person
+Expect Name is "Linus"
+Expect Score is 271
+
+Make Ada Player be New Player with Name be "Ada" and Score be 10
+Make Grace Player be New Player with Name be "Grace" and Score be 12
+Make Players be List with Ada Player and Grace Player
+Make Total be 0
+Repeat for Name and Score in Players
+  Change Total to Total plus Score
+Expect Total is 22
+
+Keep Left and Right be Tuple with 3 and 4
+Expect Left times Right is 12

@@ -1,0 +1,15 @@
+Record Profile
+  Has Name as String
+  Has Visits as Int
+
+Make Guest be New Profile with Name be "Ada" and Visits be 1
+Change Visits of Guest to Visits of Guest plus 1
+Say "{Name of Guest} visited {Visits of Guest} times"
+
+Make Maybe Label be nothing as Maybe String
+Change Maybe Label to "returning"
+Match Maybe Label
+  When Some Label
+    Say Label
+  When nothing
+    Say "new"

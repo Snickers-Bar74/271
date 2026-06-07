@@ -1,0 +1,46 @@
+Object Account
+  Has Name as String
+  Private Has Pin as String
+
+  Private Teach Reveal Pin using Self
+    Pin of Self
+
+  Teach Pin Length using Self
+    Length of Use Reveal Pin of Self
+
+  Teach Rename using Self and Fresh Name as String
+    Change Name of Self to Fresh Name
+    Name of Self
+
+  Teach Label using Self returns String
+    Name of Self
+
+  Teach Describe With using Self and Prefix as String returns String
+    "{Prefix}: {Name of Self}"
+
+Object Premium Account extends Account
+  Has Level as Int
+
+  Teach Label using Self returns String
+    "{Use Parent Label of Self} level {Level of Self}"
+
+  Teach Describe With using Self and Prefix as String returns String
+    "{Use Parent Describe With of Self with Prefix} level {Level of Self}"
+
+Teach Welcome Account using Account Person as Account returns String
+  Use Label of Account Person
+
+Make Basic be New Account with Name be "Ada" and Pin be "secret"
+Expect Use Pin Length of Basic is 6
+Expect Use Rename of Basic with "Ada Lovelace" is "Ada Lovelace"
+Expect Name of Basic is "Ada Lovelace"
+Expect Use Label of Basic is "Ada Lovelace"
+Expect Use Describe With of Basic with "Basic" is "Basic: Ada Lovelace"
+
+Make Premium be New Premium Account with Name be "Grace" and Pin be "hidden" and Level be 2
+Expect Use Pin Length of Premium is 6
+Expect Use Label of Premium is "Grace level 2"
+Expect Use Describe With of Premium with "VIP" is "VIP: Grace level 2"
+Expect Use Welcome Account with Premium is "Grace level 2"
+Change Name of Premium to "Grace Hopper"
+Expect Name of Premium is "Grace Hopper"

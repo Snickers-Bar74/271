@@ -1,0 +1,18 @@
+Make Pair Key be List with "x" and "y"
+Make Settings be Map with Pair Key meaning "grid" and "theme" meaning "calm"
+
+Say Use Map Get with Settings and Pair Key and Otherwise be "missing"
+
+Use Map Put with Settings and "level" and 271
+Say Use Map Keys with Settings
+Say Use Map Values with Settings
+
+Make Public Settings be Use Map Merge with Settings and Map with "theme" meaning "bright"
+Say Use Map Get with Public Settings and "theme" and Otherwise be "none"
+
+Make Maybe Missing be Use Map Get with Settings and "missing" as Maybe String
+Match Maybe Missing
+  When Some Value
+    Say Value
+  When nothing
+    Say "missing key"

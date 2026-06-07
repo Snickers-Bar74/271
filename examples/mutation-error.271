@@ -1,0 +1,12 @@
+Note Expected Error
+
+Make Count be 1
+Change Count to "one"
+
+Record Profile
+  Has Name as String
+  Has Age as Int
+
+Make Ada be New Profile with Name be "Ada" and Age be 36
+Change Name of Ada to 271
+Change Missing of Ada to "nope"

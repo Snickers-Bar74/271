@@ -1,0 +1,54 @@
+Teach Greet using Name and Ending be "!"
+  "{Name}{Ending}"
+
+Teach Count Items using many Items
+  Length of Items
+
+Make Scores be Map with "Ada" meaning 10 and "Grace" meaning 12
+Make Tags be Set with "ready" and "tested"
+Make Ready Word be "ready"
+Make Pair be Tuple with 7 and 8
+Make First and Second be Pair
+Make Add One be Teach using Number give Number plus 1
+
+Say Use Greet with Name be "Ada" and Ending be "?"
+Say Use Count Items with 1 and 2 and 3
+Say "ready? {Ready Word is in Tags}"
+Say First plus Second
+Say Use Add One with 4
+
+Make Count be 0
+Repeat forever
+  Change Count to Count plus 1
+  If Count is less than 3
+    Skip
+  Stop
+Say "loop {Count}"
+
+Make Maybe Name be Some "Ada" as Maybe String
+Match Maybe Name
+  When Some Name
+    Say "some {Name}"
+  When nothing
+    Say "none"
+
+Match Count
+  When Int named Amount
+    Say "count {Amount}"
+  When anything
+    Say "other"
+
+Make Trial be Success "ok"
+Match Trial
+  When Success Text
+    Say Text
+  When Failure Error
+    Say Error
+
+Try
+  Make Needed be Need Failure "bad"
+  Say Needed
+Catch Error
+  Say Error
+Finally
+  Say "finished"

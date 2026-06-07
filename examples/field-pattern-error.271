@@ -1,0 +1,13 @@
+Note Expected Error
+
+Record Player
+  Has Name as String
+  Has Score as Int
+
+Make Player be New Player with Name be "Ada" and Score be 271
+
+Match Player
+  When Player with Missing Field be Value
+    Say Value
+  When Missing Type with Name be Name
+    Say Name

@@ -1,0 +1,10 @@
+Bring Http
+
+Make Get Response be Need Use Http Get with "http://127.0.0.1:2710/hello?name=Client"
+Make Get Data be Need Use Json of Get Response
+Say Message of Get Data
+
+Make Body be Map with "name" meaning "Poster"
+Make Post Response be Need Use Http Post with "http://127.0.0.1:2710/hello" and Json be Body
+Make Post Data be Need Use Json of Post Response
+Say Message of Post Data

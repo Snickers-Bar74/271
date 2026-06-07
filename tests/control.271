@@ -1,0 +1,17 @@
+Make Total be 0
+
+Repeat for Number in Range from 1 to 5
+  If Number is 4
+    Skip
+  Change Total to Total plus Number
+
+Expect Total is 11
+
+Make Names be List with "Ada" and "Grace"
+Make Maybe First be Item 0 of Names as Maybe String
+
+Match Maybe First
+  When Some First
+    Expect First is "Ada"
+  When nothing
+    Expect false is true

@@ -1,0 +1,5 @@
+Bring "math-tools.271" names Triple and Box
+
+Make Number be Use Triple with 4
+Make Box be New Box with Value be Number
+Say Use Label of Box

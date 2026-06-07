@@ -1,0 +1,5 @@
+Note Expected Error
+
+Use Int Parse with "271"
+Use Json Parse with "{bad"
+Ignore Result "not a result"

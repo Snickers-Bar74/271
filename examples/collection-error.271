@@ -1,0 +1,11 @@
+Note Expected Error
+Make Numbers be Empty List as List of Int
+Use List Add with Numbers and "wrong"
+Use List Replace At with Numbers and 0 and "wrong"
+
+Make Names be Empty Set as Set of String
+Use Set Add with Names and 271
+
+Make Scores be Empty Map as Map of String to Int
+Use Map Put with Scores and 1 and 271
+Use Map Put with Scores and "Ada" and "wrong"

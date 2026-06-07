@@ -1,0 +1,22 @@
+Bring File
+Bring Json
+Bring String
+
+Make Finished be false
+
+Try
+  Make Data be Need Use Json Parse with "{bad"
+  Expect false is true
+Catch Error
+  Expect Use String Contains with Use Message of Error and "JSON" is true
+Finally
+  Change Finished to true
+
+Expect Finished is true
+
+Make Path be "runtime-test.json"
+Make Text be Need Use Json Serialize with Map with "language" meaning "twohundredseventyone"
+Need Use File Write with Path and Text
+Make Loaded be Need Use File Read with Path
+Expect Use String Contains with Loaded and "twohundredseventyone" is true
+Need Use File Delete with Path

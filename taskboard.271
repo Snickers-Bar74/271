@@ -1,0 +1,347 @@
+Bring File
+Bring Json
+Bring Http
+Bring Time
+Bring OS
+Bring Regex
+Bring String
+Bring List
+
+Keep Data File be "tasks.json"
+Keep Remote Endpoint be "https://example.test/tasks"
+Keep Title Pattern be "^[A-Za-z0-9 ,._-]+$"
+
+Note A small interactive task board showing the plain-English syntax.
+Notes
+  It stores tasks as JSON, filters with anonymous teachings,
+  syncs with HTTP, uses Result errors, and sends messages to a worker.
+
+Type Task Id means Int
+Type Command means Add Command or Done Command or List Command or Search Command or Sync Command or Help Command or Quit Command
+
+Problem App Error
+  Has Message Text as String
+
+  Teach Message using Self
+    Message Text of Self
+
+Contract Jsonable
+  Teach To Json using Self
+
+Record Task
+  Has Id as Task Id
+  Has Title as String
+  Has Done as Bool
+  Has Priority as Int
+  Has Tags as Set of String
+  Has Note as Maybe String
+  Has Created At as String
+
+  Teach Label using Self
+    Make State be If Done of Self
+      "done"
+    Otherwise
+      "open"
+    "#{Id of Self} [{State}] p{Priority of Self} {Title of Self}"
+
+  Teach To Json using Self
+    Map with
+      "id" meaning Id of Self
+      "title" meaning Title of Self
+      "done" meaning Done of Self
+      "priority" meaning Priority of Self
+      "tags" meaning Tags of Self
+      "note" meaning Note of Self
+      "created_at" meaning Created At of Self
+
+Record Add Command
+  Has Title as String
+  Has Tags as Set of String
+
+Record Done Command
+  Has Id as Task Id
+
+Record List Command
+  Has Only Open as Bool
+
+Record Search Command
+  Has Query as String
+
+Record Sync Command
+  Has Reason as String
+
+Record Help Command
+  Has Empty as Bool
+
+Record Quit Command
+  Has Empty as Bool
+
+Record Sync Message
+  Has Reason as String
+  Has Created At as String
+
+Object Secret Settings
+  Private Has Token as String
+
+  Teach Redacted using Self
+    "hidden"
+
+Object Task Store follows Jsonable
+  Has Path as String
+  Has Tasks as List of Task
+  Has Last Id as Int
+
+  Teach Next Id using Self
+    Change Last Id of Self to Last Id of Self plus 1
+    Last Id of Self
+
+  Teach Add Task using Self and Title as String and Tags as Set of String and Priority be 1
+    If Use Regex Match with Title and Pattern be Title Pattern
+      Make Id be Use Next Id of Self
+      Make Today be Use Time Format with Use Time Now and "yyyy-mm-dd"
+      Make Task be New Task with Id be Id and Title be Title and Done be false and Priority be Priority and Tags be Tags and Note be nothing and Created At be Today
+      Use List Add with Tasks of Self and Task
+      Success Task
+    Otherwise
+      Failure New App Error with Message Text be "Task titles may use letters, numbers, spaces, comma, period, underscore, and dash."
+
+  Teach Complete using Self and Id as Task Id
+    Repeat for Index in Indices of Tasks of Self
+      Make Maybe Task be Item Index of Tasks of Self as Maybe Task
+      Match Maybe Task
+        When Some Task
+          If Id of Task is Id
+            Make Updated be New Task with Id be Id of Task and Title be Title of Task and Done be true and Priority be Priority of Task and Tags be Tags of Task and Note be Note of Task and Created At be Created At of Task
+            Use List Replace At with Tasks of Self and Index and Updated
+            Success Updated
+        When nothing
+          Skip
+    Failure New App Error with Message Text be "No task has id {Id}."
+
+  Teach Open Tasks using Self
+    Use List Filter with Tasks of Self and Teach using Task give not Done of Task
+
+  Teach Tagged using Self and Tag as String
+    Use List Filter with Tasks of Self and Teach using Task give Tag is in Tags of Task
+
+  Teach Search using Self and Query as String
+    Make Lowered be Use String Lower with Query
+    Use List Filter with Tasks of Self and Teach using Task give Use String Contains with Use String Lower with Title of Task and Lowered
+
+  Teach Summary using Self
+    Make Open Items be Use List Filter with Tasks of Self and Teach using Task give not Done of Task
+    Make Done Items be Use List Filter with Tasks of Self and Teach using Task give Done of Task
+    Tuple with Length of Open Items and Length of Done Items
+
+  Teach To Json using Self
+    Use List Map with Tasks of Self and Teach using Task give Use To Json of Task
+
+  Teach Save using Self
+    Make Text Value be Need Use Json Serialize with Use To Json of Self
+    Need Use File Write with Path of Self and Text Value
+    Success "saved"
+
+Object Remote Task Store extends Task Store
+  Has Remote Url as String
+
+  Async Teach Push using Self
+    Make Body be Need Use Json Serialize with Use To Json of Self
+    Make Response be Need Await Use Http Post with Remote Url of Self and Json be Body
+    Need Use Json of Response
+
+Teach Empty Store using Path
+  New Task Store with Path be Path and Tasks be Empty List and Last Id be 0
+
+Teach Load Store using Path returns Result of Task Store or App Error
+  If Use File Exists with Path
+    Make Text Value be Need Use File Read with Path
+    Make Rows be Need Use Json Parse with Text Value
+    Make Tasks be Empty List
+    Make Highest be 0
+    Repeat for Row in Rows
+      Make Task be New Task with Id be Id of Row and Title be Title of Row and Done be Done of Row and Priority be Priority of Row and Tags be Use Set From with Tags of Row and Note be Note of Row and Created At be Created At of Row
+      Use List Add with Tasks and Task
+      If Id of Task is greater than Highest
+        Change Highest to Id of Task
+    Make Loaded be New Task Store with Path be Path and Tasks be Tasks and Last Id be Highest
+    Success Loaded
+  Otherwise
+    Make Empty be Use Empty Store with Path
+    Success Empty
+
+Teach Parse Tags using many Words as String
+  Make Tags be Empty Set
+  Repeat for Word in Words
+    Make Clean be Use String Trim with Word
+    If Clean is ""
+      Skip
+    Use Set Add with Tags and Clean
+  Tags
+
+Teach Parse Command using Line as String returns Command
+  Make Trimmed be Use String Trim with Line
+  Make Parts be Use String Split with Trimmed and By be " "
+  Match Parts
+    When List starting with "add" and many Words
+      Make Title be Use String Join with Words and By be " "
+      New Add Command with Title be Title and Tags be Set with "inbox"
+    When List with "done" and Id Text
+      Match Use Int Parse with Id Text
+        When Success Id
+          New Done Command with Id be Id
+        When Failure Error
+          New Help Command with Empty be true
+    When List with "list"
+      New List Command with Only Open be false
+    When List with "open"
+      New List Command with Only Open be true
+    When List starting with "search" and many Words
+      New Search Command with Query be Use String Join with Words and By be " "
+    When List with "sync"
+      New Sync Command with Reason be "manual"
+    When List with "help"
+      New Help Command with Empty be true
+    When List with "quit"
+      New Quit Command with Empty be true
+    When anything
+      New Help Command with Empty be true
+
+Teach Print Help
+  Make Help be Text
+    Commands:
+      add TITLE
+      done ID
+      list
+      open
+      search WORDS
+      sync
+      help
+      quit
+  Say Help
+
+Teach Print Tasks using Tasks as List of Task
+  If Length of Tasks is 0
+    Say "No tasks."
+  Otherwise
+    Repeat for Index and Task in Indexed Tasks
+      Make Badge be If Index is less than 9
+        " "
+      Otherwise
+        ""
+      Say "{Badge}{Index plus 1}. {Use Label of Task}"
+      Match Note of Task
+        When Some Note Text
+          Say "    note {Note Text}"
+        When nothing
+          Skip
+
+Teach Print Summary using Store as Task Store
+  Make Open Count and Done Count be Use Summary of Store
+  Make Pairs be Use List Zip with List with "open" and "done" and List with Open Count and Done Count
+  Repeat for Name and Count in Pairs
+    Say "{Name}: {Count}"
+
+Teach Priority Report using Store as Task Store
+  Make Sorted be Use List Sort with Tasks of Store and By be Teach using Task give Priority of Task
+  Make Total be Use List Reduce with Sorted and 0 and Teach using Sum and Task give Sum plus Priority of Task
+  Say "Priority total: {Total}"
+  Use Print Tasks with Sorted
+
+Teach Tasks Created Today using Store as Task Store
+  Make Today be Use Time Format with Use Time Now and "yyyy-mm-dd"
+  Use List Filter with Tasks of Store and Teach using Task give Created At of Task is Today
+
+Teach Title Contains using Word as String
+  Make Needle be Use String Lower with Word
+  Teach using Task give Use String Contains with Use String Lower with Title of Task and Needle
+
+Async Teach Sync Worker using Inbox as Channel of Sync Message and Store as Remote Task Store
+  Repeat forever
+    Make Maybe Message be Await Receive from Inbox as Maybe Sync Message
+    Match Maybe Message
+      When Some Message
+        Try
+          Say "Sync started: {Reason of Message}"
+          Make Remote Result be Need Await Use Push of Store
+          Say "Sync finished at {Created At of Message}"
+        Catch Error
+          Say "Sync failed: {Use Message of Error}"
+        Finally
+          Await Use Time Sleep with Seconds be 1
+      When nothing
+        Stop
+
+Async Teach Sync Now using Store as Remote Task Store
+  Make Response be Need Await Use Push of Store
+  Say "Remote accepted {Count of Response} tasks."
+
+Teach Seed Examples using Store as Task Store
+  If Length of Tasks of Store is greater than 0
+    Success "already seeded"
+  Otherwise
+    Repeat for Number in Range from 1 to 3
+      Make Title be "Example task {Number}"
+      Make Task be Need Use Add Task of Store with Title and Tags be Set with "example" and Priority be Number
+    Need Use Save of Store
+    Success "seeded"
+
+Async Teach Main
+  Make Args be Use OS Args
+  Make Path be Match Item 0 of Args
+    When Some First Arg
+      First Arg
+    When nothing
+      Data File
+  Make Store be Need Use Load Store with Path
+  Make Remote be New Remote Task Store with Path be Path of Store and Tasks be Tasks of Store and Last Id be Last Id of Store and Remote Url be Remote Endpoint
+  Make Inbox be New Channel of Sync Message with Capacity be 10
+  Make Worker be Spawn Use Sync Worker with Inbox and Remote
+  Make Banner be Text
+    twohundredseventyone taskboard
+    Type help to see commands.
+  Say Banner
+  Need Use Seed Examples with Store
+  Send New Sync Message with Reason be "startup" and Created At be Use Time Format with Use Time Now and "hh:mm:ss" to Inbox
+  Make Running be true
+  Repeat while Running
+    Make Line be Ask "taskboard"
+    Make Command be Use Parse Command with Line
+    Match Command
+      When Add Command named Add
+        Try
+          Make Task be Need Use Add Task of Store with Title of Add and Tags be Tags of Add
+          Need Use Save of Store
+          Say "Added {Use Label of Task}"
+        Catch Error
+          Say Use Message of Error
+      When Done Command named Done
+        Try
+          Make Task be Need Use Complete of Store with Id of Done
+          Need Use Save of Store
+          Say "Completed {Title of Task}"
+        Catch Error
+          Say Use Message of Error
+      When List Command named List Request
+        If Only Open of List Request
+          Use Print Tasks with Use Open Tasks of Store
+        Otherwise
+          Use Print Tasks with Tasks of Store
+        Use Print Summary with Store
+      When Search Command named Search
+        Make Matches be Use Search of Store with Query of Search
+        Use Print Tasks with Matches
+      When Sync Command named Sync
+        Send New Sync Message with Reason be Reason of Sync and Created At be Use Time Format with Use Time Now and "hh:mm:ss" to Inbox
+        Say "Sync queued."
+      When Help Command named Help
+        Use Print Help
+        Use Priority Report with Store
+      When Quit Command named Quit
+        Say "Goodbye."
+        Change Running to false
+      When anything
+        Say "Unknown command."
+  Use Close of Inbox
+  Await Worker
+  Need Use Save of Store
+  Success "done"
